@@ -1,29 +1,56 @@
+import os
 import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Direktori file dashboard.py
+DATA_DIR = os.path.join(BASE_DIR, "Air-quality-dataset")  # Direktori dataset
+
 @st.cache_data  
 def load_data():
-    df_all = pd.read_csv("../clean_df_all.csv")
-    df_Aotizhongxin = pd.read_csv("../Air-quality-dataset/PRSA_Data_Aotizhongxin_20130301-20170228.csv")
-    df_Changping = pd.read_csv("../Air-quality-dataset/PRSA_Data_Changping_20130301-20170228.csv")
-    df_Dingling = pd.read_csv("../Air-quality-dataset/PRSA_Data_Dingling_20130301-20170228.csv")
-    df_Dongsi = pd.read_csv("../Air-quality-dataset\PRSA_Data_Dongsi_20130301-20170228.csv")
-    df_Guanyuan = pd.read_csv("../Air-quality-dataset\PRSA_Data_Guanyuan_20130301-20170228.csv")
-    df_Gucheng = pd.read_csv("../Air-quality-dataset\PRSA_Data_Gucheng_20130301-20170228.csv")
-    df_Huairou = pd.read_csv("../Air-quality-dataset\PRSA_Data_Huairou_20130301-20170228.csv")
-    df_Nongzhanguan = pd.read_csv("../Air-quality-dataset\PRSA_Data_Nongzhanguan_20130301-20170228.csv")
-    df_Shunyi = pd.read_csv("../Air-quality-dataset\PRSA_Data_Shunyi_20130301-20170228.csv")
-    df_Tiantan = pd.read_csv("../Air-quality-dataset\PRSA_Data_Tiantan_20130301-20170228.csv")
-    df_Wanliu = pd.read_csv("../Air-quality-dataset\PRSA_Data_Wanliu_20130301-20170228.csv")
-    df_Wanshouxigong =pd.read_csv("../Air-quality-dataset\PRSA_Data_Wanshouxigong_20130301-20170228.csv")
+    try:
+        # Load file utama
+        df_all_path = os.path.join(BASE_DIR, "clean_df_all.csv")
+        if os.path.exists(df_all_path):
+            df_all = pd.read_csv(df_all_path)
+            df_all['date_time'] = pd.to_datetime(df_all['date_time'])
+        else:
+            df_all = None
+            st.error(f"File {df_all_path} tidak ditemukan!")
 
-    df_all['date_time'] = pd.to_datetime(df_all['date_time'])
-    
-    return df_all, df_Aotizhongxin, df_Changping, df_Dingling, df_Dongsi, df_Guanyuan, df_Gucheng, df_Huairou, df_Nongzhanguan, df_Shunyi, df_Tiantan, df_Wanliu, df_Wanshouxigong
+        # Load dataset dari folder "Air-quality-dataset"
+        datasets = [
+            "PRSA_Data_Aotizhongxin_20130301-20170228.csv",
+            "PRSA_Data_Changping_20130301-20170228.csv",
+            "PRSA_Data_Dingling_20130301-20170228.csv",
+            "PRSA_Data_Dongsi_20130301-20170228.csv",
+            "PRSA_Data_Guanyuan_20130301-20170228.csv",
+            "PRSA_Data_Gucheng_20130301-20170228.csv",
+            "PRSA_Data_Huairou_20130301-20170228.csv",
+            "PRSA_Data_Nongzhanguan_20130301-20170228.csv",
+            "PRSA_Data_Shunyi_20130301-20170228.csv",
+            "PRSA_Data_Tiantan_20130301-20170228.csv",
+            "PRSA_Data_Wanliu_20130301-20170228.csv",
+            "PRSA_Data_Wanshouxigong_20130301-20170228.csv",
+        ]
 
-df_all, df_Aotizhongxin, df_Changping, df_Dingling, df_Dongsi, df_Guanyuan, df_Gucheng, df_Huairou, df_Nongzhanguan, df_Shunyi, df_Tiantan, df_Wanliu, df_Wanshouxigong= load_data()
+        dataframes = []
+        for file in datasets:
+            file_path = os.path.join(DATA_DIR, file)
+            if os.path.exists(file_path):
+                dataframes.append(pd.read_csv(file_path))
+            else:
+                dataframes.append(None)
+                st.warning(f"File {file} tidak ditemukan di {DATA_DIR}!")
+
+        return (df_all, *dataframes)
+
+    except Exception as e:
+        st.error(f"Terjadi kesalahan saat memuat data: {e}")
+        return None
+
+df_all, df_Aotizhongxin, df_Changping, df_Dingling, df_Dongsi, df_Guanyuan, df_Gucheng, df_Huairou, df_Nongzhanguan, df_Shunyi, df_Tiantan, df_Wanliu, df_Wanshouxigong = load_data()
 
 
 st.sidebar.image("../images/logo.png")
