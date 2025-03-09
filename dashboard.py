@@ -4,10 +4,14 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Direktori file dashboard.py
-DATA_DIR = os.path.join(BASE_DIR, "Air-quality-dataset")  # Direktori dataset
+# Menentukan direktori dasar berdasarkan lokasi file dashboard.py
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, "Air-quality-dataset")
+IMAGE_PATH = os.path.join(BASE_DIR, "images", "logo.png")
 
-@st.cache_data  
+
+# Fungsi untuk memuat data dengan caching
+@st.cache_data
 def load_data():
     try:
         # Load file utama
@@ -50,12 +54,35 @@ def load_data():
         st.error(f"Terjadi kesalahan saat memuat data: {e}")
         return None
 
+# Memuat data
 df_all, df_Aotizhongxin, df_Changping, df_Dingling, df_Dongsi, df_Guanyuan, df_Gucheng, df_Huairou, df_Nongzhanguan, df_Shunyi, df_Tiantan, df_Wanliu, df_Wanshouxigong = load_data()
 
+# Menampilkan logo pada sidebar
+if os.path.exists(IMAGE_PATH):
+    st.sidebar.image(IMAGE_PATH)
+else:
+    st.sidebar.warning("Logo tidak ditemukan! Pastikan file 'logo.png' ada di folder 'images'.")
 
-st.sidebar.image("../images/logo.png")
+# Judul aplikasi
+st.title("Dashboard Analisis Kualitas Udara")
+
+# Menampilkan data jika berhasil dimuat
+if df_all is not None:
+    st.write("Berikut adalah preview dari dataset utama:")
+    st.dataframe(df_all.head())
+else:
+    st.error("Data tidak dapat dimuat. Pastikan semua file tersedia di lokasi yang benar.")
+
+
+# Menampilkan logo pada sidebar
+if os.path.exists(IMAGE_PATH):
+    st.sidebar.image(IMAGE_PATH)
+else:
+    st.sidebar.warning("Logo tidak ditemukan! Pastikan file 'logo.png' ada di folder 'images'.")
+
+# Menu Navigasi
 st.sidebar.title("Menu Navigasi")
-menu = st.sidebar.selectbox("Pilih Menu:", ["Home","Lihat Dataset", "Pertanyaan Satu", "Pertanyaan Dua", "Pertanyaan Tiga", "Pertanyaan Empat", "Kesimpulan"])
+menu = st.sidebar.selectbox("Pilih Menu:", ["Home", "Lihat Dataset", "Pertanyaan Satu", "Pertanyaan Dua", "Pertanyaan Tiga", "Pertanyaan Empat", "Kesimpulan"])
 
 
 if menu == "Home":
