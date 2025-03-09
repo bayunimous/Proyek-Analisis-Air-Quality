@@ -57,7 +57,7 @@ def load_data():
 df_all, df_Aotizhongxin, df_Changping, df_Dingling, df_Dongsi, df_Guanyuan, df_Gucheng, df_Huairou, df_Nongzhanguan, df_Shunyi, df_Tiantan, df_Wanliu, df_Wanshouxigong = load_data()
 
 # Judul aplikasi
-st.title("Dashboard Analisis Kualitas Udara")
+# st.title("Dashboard Analisis Kualitas Udara")
 
 # Menampilkan logo pada sidebar
 if os.path.exists(IMAGE_PATH):
