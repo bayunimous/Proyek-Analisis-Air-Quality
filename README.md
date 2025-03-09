@@ -10,9 +10,9 @@ Here are the steps to set up your virtual environment for this project:
    git clone ##.git
    ```
 
-2. Navigate to the dicoding-airquality/ directory
+2. Navigate to the Proyek Analisis Air Quality/ directory
    ```
-   cd dicoding-airquality
+   cd Proyek Analisis Air Quality
    ```
 3. Launch the Streamlit app
    ```
@@ -26,7 +26,7 @@ Here are the steps to set up your virtual environment for this project:
 
 ## Streamlit Cloud :
 
-Streamlit Cloud : (##)
+Streamlit Cloud : (https://bayunimous-analytic-air.streamlit.app/)
 
 ![Air Quality Dashboard Preview](images/dashboard.png)
 

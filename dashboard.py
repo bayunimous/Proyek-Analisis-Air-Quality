@@ -15,6 +15,7 @@ def load_data():
 df_all = load_data()
 
 # Sidebar untuk navigasi
+st.sidebar.image("../images/logo.png")
 st.sidebar.title("Menu Navigasi")
 menu = st.sidebar.selectbox("Pilih Analisis:", ["Home", "Pertanyaan Satu", "Pertanyaan Dua", "Pertanyaan Tiga", "Pertanyaan Empat"])
 
