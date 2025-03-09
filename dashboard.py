@@ -80,18 +80,29 @@ st.sidebar.title("Menu Navigasi")
 menu = st.sidebar.selectbox("Pilih Menu:", ["Home", "Lihat Dataset", "Pertanyaan Satu", "Pertanyaan Dua", "Pertanyaan Tiga", "Pertanyaan Empat", "Kesimpulan"])
 
 
+# if menu == "Home":
+#     st.title("Air Quality Dataset")
+#     st.markdown("""
+#     Proyek Akhir Analisis Data: Air Quality Dataset\n
+#     Nama: Bayu Nugraha (MC-03)\n
+#     Email: bayunugraha.bjm@gmail.com\n
+#     Cohort ID: MC216D5Y0488
+#         """)
+#     st.subheader("Deskripsi Data")
+#     st.write(df_all.describe())  
+#     st.subheader("Dataframe")
+#     st.dataframe(df_all.head())
+
 if menu == "Home":
-    st.title("Air Quality Dataset")
-    st.markdown("""
-    Proyek Akhir Analisis Data: Air Quality Dataset\n
-    Nama: Bayu Nugraha (MC-03)\n
-    Email: bayunugraha.bjm@gmail.com\n
-    Cohort ID: MC216D5Y0488
-        """)
-    st.subheader("Deskripsi Data")
-    st.write(df_all.describe())  
-    st.subheader("Dataframe")
-    st.dataframe(df_all.head())
+    st.title("Dashboard Analisis Kualitas Udara")
+    st.subheader("Air Quality Dataset")
+
+    # Informasi Data Diri
+    st.write("**Proyek Akhir Analisis Data: Air Quality Dataset**")
+    st.write("**Nama:** Bayu Nugraha (MC-03)")
+    st.write("**Email:** bayunugraha.bjm@gmail.com")
+    st.write("**Cohort ID:** MC216D5Y0488")
+
 elif menu == "Lihat Dataset":
     st.sidebar.title("Dataset")
     dataset = st.sidebar.selectbox("Lihat Dataset:", ["Aotizhongxin", "Changping", "Dingling", "Dongsi", "Guanyuan", "Gucheng", "Huairou", "Nongzhanguan", "Shunyi", "Tiantan", "Wanliu", "Wanshouxigong"])
