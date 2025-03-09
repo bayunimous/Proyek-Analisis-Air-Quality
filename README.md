@@ -7,7 +7,7 @@ Here are the steps to set up your virtual environment for this project:
 1. Clone this repository
 
    ```
-   git clone ##.git
+   git clone https://github.com/bayunimous/Proyek-Analisis-Air-Quality.git
    ```
 
 2. Navigate to the Proyek Analisis Air Quality/ directory
@@ -26,7 +26,7 @@ Here are the steps to set up your virtual environment for this project:
 
 ## Streamlit Cloud :
 
-Streamlit Cloud : (https://bayunimous-analytic-air.streamlit.app/)
+Streamlit Cloud : (https://nm5ybagutdwbwbthj3bybm.streamlit.app/)
 
 ![Air Quality Dashboard Preview](images/dashboard.png)
 
