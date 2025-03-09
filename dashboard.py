@@ -9,7 +9,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "Air-quality-dataset")
 IMAGE_PATH = os.path.join(BASE_DIR, "images", "logo.png")
 
-
 # Fungsi untuk memuat data dengan caching
 @st.cache_data
 def load_data():
@@ -57,17 +56,8 @@ def load_data():
 # Memuat data
 df_all, df_Aotizhongxin, df_Changping, df_Dingling, df_Dongsi, df_Guanyuan, df_Gucheng, df_Huairou, df_Nongzhanguan, df_Shunyi, df_Tiantan, df_Wanliu, df_Wanshouxigong = load_data()
 
-
 # Judul aplikasi
 st.title("Dashboard Analisis Kualitas Udara")
-
-# Menampilkan data jika berhasil dimuat
-if df_all is not None:
-    st.write("Berikut adalah preview dari dataset utama:")
-    st.dataframe(df_all.head())
-else:
-    st.error("Data tidak dapat dimuat. Pastikan semua file tersedia di lokasi yang benar.")
-
 
 # Menampilkan logo pada sidebar
 if os.path.exists(IMAGE_PATH):
@@ -78,20 +68,6 @@ else:
 # Menu Navigasi
 st.sidebar.title("Menu Navigasi")
 menu = st.sidebar.selectbox("Pilih Menu:", ["Home", "Lihat Dataset", "Pertanyaan Satu", "Pertanyaan Dua", "Pertanyaan Tiga", "Pertanyaan Empat", "Kesimpulan"])
-
-
-# if menu == "Home":
-#     st.title("Air Quality Dataset")
-#     st.markdown("""
-#     Proyek Akhir Analisis Data: Air Quality Dataset\n
-#     Nama: Bayu Nugraha (MC-03)\n
-#     Email: bayunugraha.bjm@gmail.com\n
-#     Cohort ID: MC216D5Y0488
-#         """)
-#     st.subheader("Deskripsi Data")
-#     st.write(df_all.describe())  
-#     st.subheader("Dataframe")
-#     st.dataframe(df_all.head())
 
 if menu == "Home":
     st.title("Dashboard Analisis Kualitas Udara")
@@ -105,6 +81,14 @@ if menu == "Home":
 
 elif menu == "Lihat Dataset":
     st.sidebar.title("Dataset")
+    
+    # Menampilkan preview dataset utama hanya pada menu ini
+    if df_all is not None:
+        st.write("Berikut adalah preview dari dataset utama:")
+        st.dataframe(df_all.head())
+    else:
+        st.error("Data tidak dapat dimuat. Pastikan semua file tersedia di lokasi yang benar.")
+
     dataset = st.sidebar.selectbox("Lihat Dataset:", ["Aotizhongxin", "Changping", "Dingling", "Dongsi", "Guanyuan", "Gucheng", "Huairou", "Nongzhanguan", "Shunyi", "Tiantan", "Wanliu", "Wanshouxigong"])
 
     if dataset == "Aotizhongxin":
@@ -134,42 +118,42 @@ elif menu == "Lihat Dataset":
         st.write(df_Dongsi.describe())  
         st.subheader("Dataframe")
         st.dataframe(df_Dongsi.head())
-    
+
     elif dataset == "Guanyuan":
         st.title("Guanyuan")
         st.subheader("Deskripsi Data")
         st.write(df_Guanyuan.describe())  
         st.subheader("Dataframe")
         st.dataframe(df_Guanyuan.head())
-    
+
     elif dataset == "Gucheng":
         st.title("Gucheng")
         st.subheader("Deskripsi Data")
         st.write(df_Gucheng.describe())  
         st.subheader("Dataframe")
         st.dataframe(df_Gucheng.head())
-    
+
     elif dataset == "Huairou":
         st.title("Huairou")
         st.subheader("Deskripsi Data")
         st.write(df_Huairou.describe())  
         st.subheader("Dataframe")
         st.dataframe(df_Huairou.head())
-    
+
     elif dataset == "Nongzhanguan":
         st.title("Nongzhanguan")
         st.subheader("Deskripsi Data")
         st.write(df_Nongzhanguan.describe())  
         st.subheader("Dataframe")
         st.dataframe(df_Nongzhanguan.head())
-    
+
     elif dataset == "Shunyi":
         st.title("Shunyi")
         st.subheader("Deskripsi Data")
         st.write(df_Shunyi.describe())  
         st.subheader("Dataframe")
         st.dataframe(df_Shunyi.head())
-    
+
     elif dataset == "Tiantan":
         st.title("Tiantan")
         st.subheader("Deskripsi Data")
@@ -183,7 +167,7 @@ elif menu == "Lihat Dataset":
         st.write(df_Wanliu.describe())  
         st.subheader("Dataframe")
         st.dataframe(df_Wanliu.head())
-    
+
     elif dataset == "Wanshouxigong":
         st.title("Wanshouxigong")
         st.subheader("Deskripsi Data")
