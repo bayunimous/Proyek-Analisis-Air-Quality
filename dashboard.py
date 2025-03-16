@@ -38,7 +38,7 @@ else:
 
 # Menu Navigasi
 st.sidebar.title("Menu Navigasi")
-menu = st.sidebar.selectbox("Pilih Menu:", ["Home", "Lihat Dataset", "Analisis Data", "Kesimpulan"])
+menu = st.sidebar.selectbox("Pilih Menu:", ["Home", "Lihat Dataset", "Analisis Data", "Visualisasi", "Kesimpulan"])
 
 if menu == "Home":
     st.title("Dashboard Analisis Kualitas Udara")
@@ -56,52 +56,123 @@ elif menu == "Lihat Dataset":
 
 elif menu == "Analisis Data":
     if df_all is not None:
+        st.subheader("Analisis Data dengan Filter")
+
+        # Fitur interaktif: Filtering berdasarkan tanggal
         min_date, max_date = df_all["date_time"].min(), df_all["date_time"].max()
         start_date, end_date = st.sidebar.date_input("Pilih Rentang Tanggal", [min_date, max_date])
 
+        # Fitur interaktif: Filtering berdasarkan musim
         season_filter = st.sidebar.selectbox("Pilih Musim", ["Semua", "Winter", "Spring", "Summer", "Autumn"])
         
-        # Hanya tampilkan pilihan filter kondisi cuaca jika kolom "weathersit" ada
+        # Fitur interaktif: Filtering berdasarkan kondisi cuaca
         if "weathersit" in df_all.columns:
             weather_filter = st.sidebar.selectbox("Pilih Kondisi Cuaca", ["Semua", "Clear", "Cloudy", "Rainy"])
         else:
             weather_filter = "Semua"
 
-        # Filter data berdasarkan tanggal
+        # Menerapkan filter pada dataset
         df_filtered = df_all[(df_all["date_time"] >= pd.to_datetime(start_date)) & (df_all["date_time"] <= pd.to_datetime(end_date))]
 
-        # Filter berdasarkan musim
         if season_filter != "Semua":
             season_map = {"Winter": [12, 1, 2], "Spring": [3, 4, 5], "Summer": [6, 7, 8], "Autumn": [9, 10, 11]}
             df_filtered = df_filtered[df_filtered["date_time"].dt.month.isin(season_map[season_filter])]
 
-        # Filter berdasarkan kondisi cuaca, hanya jika "weathersit" ada
         if weather_filter != "Semua" and "weathersit" in df_filtered.columns:
             weather_map = {"Clear": 1, "Cloudy": 2, "Rainy": 3}
             df_filtered = df_filtered[df_filtered["weathersit"] == weather_map[weather_filter]]
 
-        st.subheader("Hasil Filter Data")
-        st.write(df_filtered.head())
+        # Menampilkan hasil filter dalam bentuk visualisasi
+        st.subheader("Distribusi PM2.5 Setelah Filter Diterapkan")
+        
+        # Teks dinamis berdasarkan musim yang dipilih
+        explanation = "**Apa yang ditampilkan?**\n\n"
+        explanation += "- Histogram ini menunjukkan distribusi konsentrasi **PM2.5** setelah penerapan filter.\n"
 
-        # Visualisasi Bar Chart
-        st.subheader("Rata-rata Konsentrasi Polutan Berdasarkan Filter")
-        pollutant_avg = df_filtered[["NO2", "CO", "PM2.5"]].mean()
+        if season_filter == "Winter":
+            explanation += "- Musim dingin sering kali memiliki **polusi lebih tinggi** karena udara dingin dapat menjebak polutan di dekat permukaan tanah.\n"
+        elif season_filter == "Spring":
+            explanation += "- Di musim semi, polusi udara cenderung **lebih rendah** karena hujan dan angin sering membersihkan udara.\n"
+        elif season_filter == "Summer":
+            explanation += "- Musim panas biasanya memiliki **variasi besar dalam PM2.5**, karena peningkatan suhu dapat meningkatkan reaksi kimia polutan tertentu.\n"
+        elif season_filter == "Autumn":
+            explanation += "- Pada musim gugur, PM2.5 bisa meningkat karena **aktivitas pertanian atau pembakaran biomassa**.\n"
+        else:
+            explanation += "- Semua musim ditampilkan, sehingga pola polusi sepanjang tahun dapat diamati.\n"
 
-        plt.figure(figsize=(8, 5))
-        sns.barplot(x=pollutant_avg.index, y=pollutant_avg.values, palette="coolwarm")
-        plt.title("Rata-rata Konsentrasi NO2, CO, dan PM2.5")
-        plt.ylabel("Konsentrasi")
-        plt.show()
-        st.pyplot(plt)
+        st.markdown(explanation)
+
+        fig, ax = plt.subplots(figsize=(10, 5))
+        sns.histplot(df_filtered["PM2.5"], bins=30, kde=True, ax=ax)
+        ax.set_xlabel("PM2.5 Concentration")
+        ax.set_ylabel("Frequency")
+        st.pyplot(fig)
+
+        st.subheader("Rata-rata PM2.5 Berdasarkan Musim")
+
+        # Teks dinamis untuk rata-rata PM2.5 berdasarkan musim
+        explanation_season = "**Apa yang ditampilkan?**\n\n"
+        explanation_season += "- Grafik batang ini menunjukkan rata-rata **PM2.5** di setiap bulan berdasarkan filter yang dipilih.\n"
+
+        if season_filter == "Winter":
+            explanation_season += "- Pada musim dingin, rata-rata PM2.5 bisa lebih tinggi karena **kurangnya pergerakan udara**.\n"
+        elif season_filter == "Spring":
+            explanation_season += "- Musim semi sering menunjukkan **penurunan PM2.5** karena curah hujan dan angin yang lebih tinggi.\n"
+        elif season_filter == "Summer":
+            explanation_season += "- Di musim panas, PM2.5 bisa dipengaruhi oleh **aktivitas kendaraan dan peningkatan ozon**.\n"
+        elif season_filter == "Autumn":
+            explanation_season += "- Pada musim gugur, ada kemungkinan peningkatan PM2.5 karena **debu dan aktivitas pertanian**.\n"
+        else:
+            explanation_season += "- Semua musim ditampilkan, sehingga kita bisa melihat pola jangka panjang PM2.5 sepanjang tahun.\n"
+
+        st.markdown(explanation_season)
+
+        season_avg = df_filtered.groupby(df_filtered["date_time"].dt.month)["PM2.5"].mean()
+        fig, ax = plt.subplots(figsize=(8, 5))
+        season_avg.plot(kind='bar', color='blue', ax=ax)
+        ax.set_xlabel("Bulan")
+        ax.set_ylabel("Rata-rata PM2.5")
+        st.pyplot(fig)
+
+
+elif menu == "Visualisasi":
+    if df_all is not None:
+        st.subheader("Visualisasi Data")
+
+        # Pilihan visualisasi berdasarkan pertanyaan bisnis
+        visual_option = st.selectbox("Pilih Visualisasi", ["Distribusi PM2.5", "Pengaruh Kecepatan Angin terhadap PM2.5"])
+
+        if visual_option == "Distribusi PM2.5":
+            st.subheader("Distribusi Konsentrasi PM2.5")
+            fig, ax = plt.subplots(figsize=(10, 5))
+            sns.histplot(df_all["PM2.5"], bins=30, kde=True, ax=ax)
+            ax.set_xlabel("PM2.5 Concentration")
+            ax.set_ylabel("Frequency")
+            st.pyplot(fig)
+
+        elif visual_option == "Pengaruh Kecepatan Angin terhadap PM2.5":
+            st.subheader("Rata-rata Konsentrasi PM2.5 Selama Musim Panas")
+            df_all['month'] = df_all['date_time'].dt.month
+            df_summer = df_all[df_all['month'].isin([6, 7, 8])]
+            summer_agg = df_summer.groupby('month')[['WSPM', 'PM2.5']].mean().reset_index()
+
+            fig, ax = plt.subplots(figsize=(10, 5))
+            sns.barplot(x=summer_agg['month'], y=summer_agg['PM2.5'], color="blue", ax=ax)
+            ax.set_xlabel("Bulan")
+            ax.set_ylabel("PM2.5")
+            st.pyplot(fig)
 
 elif menu == "Kesimpulan":
     st.title("Kesimpulan")
     st.markdown("""
     **Kesimpulan dari Analisis Data:**
-    1. **Kecepatan Angin (WSPM)** berperan dalam penyebaran polutan. Saat angin tinggi, PM2.5 menurun.
-    2. **NO2 dan CO** meningkat karena aktivitas kendaraan bermotor.
-    3. **Hujan** membantu menurunkan PM2.5 tetapi bisa meningkat dalam hujan lebat.
-    4. **Konsentrasi NO2 dan CO** mempengaruhi pembentukan O3.
+    1. **Kecepatan Angin (WSPM) mempengaruhi PM2.5**  
+       - Kecepatan angin yang lebih tinggi membantu menyebarkan polutan, sehingga konsentrasi PM2.5 menurun.  
+       - Sebaliknya, saat kecepatan angin rendah, polusi udara cenderung menumpuk di satu area.  
+
+    2. **Hubungan NO2, CO, dan PM2.5**  
+       - Terdapat korelasi positif antara NO2 dan CO dengan PM2.5.  
+       - Peningkatan NO2 dan CO sering terjadi pada jam-jam sibuk, mengindikasikan bahwa kendaraan bermotor merupakan sumber utama polusi udara.  
     """)
 else:
     st.warning("Menu belum tersedia!")
